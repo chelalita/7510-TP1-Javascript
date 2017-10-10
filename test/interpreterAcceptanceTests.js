@@ -24,6 +24,13 @@ describe("Interpreter", function () {
         "hija(X, Y) :- mujer(X), padre(Y, X)."
     ];
 
+    var db2 = [
+        "varon(juan).",
+        "varon(pepe).",
+        "varon(",
+    ];
+    
+
     var interpreter = null;
 
     before(function () {
@@ -36,6 +43,8 @@ describe("Interpreter", function () {
 
     beforeEach(function () {
         // runs before each test in this block
+        interpreter2 = new Interpreter();
+        interpreter2.parseDB(db2);
         interpreter = new Interpreter();
         interpreter.parseDB(db);
     });
@@ -67,8 +76,6 @@ describe("Interpreter", function () {
             assert(interpreter.checkQuery('padre(mario, pepe)') === false);
         });
 
-        // TODO: Add more tests
-
     });
 
     describe('Interpreter Rules', function () {
@@ -83,11 +90,35 @@ describe("Interpreter", function () {
             assert(interpreter.checkQuery('hijo(pepe, juan)'));
         });
 
-        // TODO: Add more tests
 
     });
 
 
-});
+    describe('Inconsistent query', function () {
+
+        it('(pepe, juan) should be nil', function () {
+            assert(interpreter.checkQuery('(pepe, juan)') === null);
+        });
+        it('hija [maria, roberto] should be nil', function () {
+            assert(interpreter.checkQuery('hija[maria, roberto]') === null);
+        });
+        it(" nothing should be null ", function () {
+            assert(interpreter.checkQuery("") === null);
+        });
+         it('hijo should be null', function () {
+            assert(interpreter.checkQuery("hijo") === null);
+        });
 
 
+    });
+
+    describe('Inconsistent Database', function () {
+
+        it('(pepe, juan) should be nil', function () {
+            assert(interpreter2.checkQuery('(pepe, juan)') === null);
+        });
+        it('hija [maria, roberto] should be nil', function () {
+            assert(interpreter2.checkQuery('hija[maria, roberto]') === null);
+        });
+    });  
+})
